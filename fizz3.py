@@ -43,31 +43,26 @@ def getAnswer(question_data):
     numbers = question_data['numbers']
     number = []
     response = []
-    result = [0] * len(numbers)
 
     for rule in rules:
         number.append(rule['number'])
         response.append(rule['response'])
 
     for i in range(len(numbers)):
-        divBy = []
+        res = ''
         for j in range(len(number)):
             if(not numbers[i] % number[j]):
-                divBy.append(j)
-        if(divBy != []):
-            result[i] = ''
-            for j in divBy:
-                result[i] += response[j]
-        else:
-            result[i] = numbers[i]
+                res += response[j]
+        if(res != ''):
+            numbers[i] = res
 
-    return(" ".join([str(x) for x in result]))
+    return(" ".join([str(x) for x in numbers]))
 
 
 # keep trying answers until a correct one is given
-def get_correct_answer(question_url, question_data, first):
+def get_correct_answer(question_url, question_data, firstTwo):
     while True:
-        if(first):
+        if(firstTwo):
             answer = 'python'
         else:
             answer = getAnswer(question_data)
@@ -85,7 +80,7 @@ def get_correct_answer(question_url, question_data, first):
             return response.get('nextQuestion')
 
 # do the next question
-def do_question(domain, question_url, first):
+def do_question(domain, question_url, firstTwo):
     print_sep()
     print('*** GET %s' % question_url)
 
@@ -98,7 +93,7 @@ def do_question(domain, question_url, first):
 
     if next_question:
         return next_question
-    return get_correct_answer(question_url, question_data, first)
+    return get_correct_answer(question_url, question_data, firstTwo)
 
 
 def main():
